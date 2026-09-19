@@ -228,6 +228,12 @@ gum_kernel_try_mprotect (GumAddress address,
 
   kr = mach_vm_protect (task, aligned_address, aligned_size, FALSE, mach_prot);
 
+  if (kr != KERN_SUCCESS && (mach_prot & VM_PROT_WRITE) != 0)
+  {
+    kr = mach_vm_protect (task, aligned_address, aligned_size, FALSE,
+        mach_prot | VM_PROT_COPY);
+  }
+
   return kr == KERN_SUCCESS;
 }
 
